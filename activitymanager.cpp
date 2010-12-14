@@ -3,6 +3,7 @@
 #include "activity.h"
 
 #include <Plasma/Service>
+#include <Plasma/ServiceJob>
 
 #include <QGraphicsLinearLayout>
 #include <QString>
@@ -69,44 +70,49 @@ void ActivityManager::add(QString id, QString name) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
   KConfigGroup op = service->operationDescription("add");
   op.writeEntry("Name", name);
-  service->startOperationCall(op);
+  Plasma::ServiceJob *job = service->startOperationCall(op);
+  connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
 }
 
 void ActivityManager::setCurrent(QString id) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
-  service->startOperationCall(service->operationDescription("setCurrent"));
+  Plasma::ServiceJob *job = service->startOperationCall(service->operationDescription("setCurrent"));
+  connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
 }
 
 void ActivityManager::stop(QString id) {
   // TODO: when activity is stopped, take a screenshot and use that icon
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
-  service->startOperationCall(service->operationDescription("stop"));
+  Plasma::ServiceJob *job = service->startOperationCall(service->operationDescription("stop"));
+  connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
 }
 
 void ActivityManager::start(QString id) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
-  service->startOperationCall(service->operationDescription("start"));
+  Plasma::ServiceJob *job = service->startOperationCall(service->operationDescription("start"));
+  connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
 }
 
 void ActivityManager::setName(QString id, QString name) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
   KConfigGroup op = service->operationDescription("setName");
   op.writeEntry("Name", name);
-  service->startOperationCall(op);
+  Plasma::ServiceJob *job = service->startOperationCall(op);
+  connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
 }
 
 void ActivityManager::setIcon(QString id, QString name) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
   KConfigGroup op = service->operationDescription("setIcon");
-  op.writeEntry("Name", name);
-  service->startOperationCall(op);
+  op.writeEntry("Icon", name);
+  Plasma::ServiceJob *job = service->startOperationCall(op);
+  connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
 }
 
 void ActivityManager::remove(QString id) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
-  KConfigGroup op = service->operationDescription("remove");
-  op.writeEntry("Id", id);
-  service->startOperationCall(op);
+  Plasma::ServiceJob *job = service->startOperationCall(service->operationDescription("remove"));
+  connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
 }
 
 K_EXPORT_PLASMA_APPLET(activitymanager, ActivityManager)
