@@ -70,15 +70,22 @@ void ActivityManager::setCurrent(QString id) {
   service->startOperationCall(service->operationDescription("setCurrent"));
 }
 
-void ActivityManager::stopActivity(QString id) {
+void ActivityManager::stop(QString id) {
   // TODO: when activity is stopped, take a screenshot and use that icon
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
   service->startOperationCall(service->operationDescription("stop"));
 }
 
-void ActivityManager::startActivity(QString id) {
+void ActivityManager::start(QString id) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
   service->startOperationCall(service->operationDescription("start"));
+}
+
+void ActivityManager::setName(QString id, QString name) {
+  Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
+  KConfigGroup op = service->operationDescription("setName");
+  op.writeEntry("Name", name);
+  service->startOperationCall(op);
 }
 
 K_EXPORT_PLASMA_APPLET(activitymanager, ActivityManager)

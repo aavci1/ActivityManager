@@ -24,8 +24,9 @@ public slots:
   void activityRemoved(QString id);
 
   void setCurrent(QString id);
-  void stopActivity(QString id);
-  void startActivity(QString id);
+  void stop(QString id);
+  void start(QString id);
+  void setName(QString id, QString name);
 
 private:
   QGraphicsWidget *m_widget;
