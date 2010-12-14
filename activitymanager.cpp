@@ -65,9 +65,9 @@ void ActivityManager::activityRemoved(QString id) {
   m_widget->setMinimumSize(200, m_activities.size() * 38);
 }
 
-void ActivityManager::startActivity(QString id) {
+void ActivityManager::setCurrent(QString id) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
-  service->startOperationCall(service->operationDescription("start"));
+  service->startOperationCall(service->operationDescription("setCurrent"));
 }
 
 void ActivityManager::stopActivity(QString id) {
@@ -76,9 +76,9 @@ void ActivityManager::stopActivity(QString id) {
   service->startOperationCall(service->operationDescription("stop"));
 }
 
-void ActivityManager::setCurrent(QString id) {
+void ActivityManager::startActivity(QString id) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
-  service->startOperationCall(service->operationDescription("setCurrent"));
+  service->startOperationCall(service->operationDescription("start"));
 }
 
 K_EXPORT_PLASMA_APPLET(activitymanager, ActivityManager)

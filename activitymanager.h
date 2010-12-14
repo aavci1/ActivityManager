@@ -22,9 +22,10 @@ public slots:
   void dataUpdated(QString source, Plasma::DataEngine::Data data);
   void activityAdded(QString id);
   void activityRemoved(QString id);
-  void startActivity(QString id);
-  void stopActivity(QString id);
+
   void setCurrent(QString id);
+  void stopActivity(QString id);
+  void startActivity(QString id);
 
 private:
   QGraphicsWidget *m_widget;
