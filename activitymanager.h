@@ -16,15 +16,12 @@ public:
 
   void init();
 
-  void addActivity(QString id);
-  void removeActivity(QString id);
-
   QGraphicsWidget *graphicsWidget() { return m_widget; }
 
 public slots:
   void dataUpdated(QString source, Plasma::DataEngine::Data data);
-  void sourceAdded(QString source);
-  void sourceRemoved(QString source);
+  void activityAdded(QString id);
+  void activityRemoved(QString id);
   void startActivity(QString id);
   void stopActivity(QString id);
   void setCurrent(QString id);

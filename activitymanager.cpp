@@ -22,13 +22,23 @@ void ActivityManager::init() {
   Plasma::DataEngine *engine = dataEngine("org.kde.activities");
   foreach (const QString source, engine->sources())
     if (source != "Status")
-      addActivity(source);
+      activityAdded(source);
   // activity addition and removal
-  connect(engine, SIGNAL(sourceAdded(QString)), this, SLOT(sourceAdded(QString)));
-  connect(engine, SIGNAL(sourceRemoved(QString)), this, SLOT(sourceRemoved(QString)));
+  connect(engine, SIGNAL(sourceAdded(QString)), this, SLOT(activityAdded(QString)));
+  connect(engine, SIGNAL(sourceRemoved(QString)), this, SLOT(activityRemoved(QString)));
 }
 
-void ActivityManager::addActivity(QString id) {
+void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data) {
+  if (!m_activities.contains(source))
+    return;
+  // update activity info
+  m_activities[source]->setName(data["Name"].toString());
+  m_activities[source]->setState(data["State"].toString());
+  m_activities[source]->setIcon(data["Icon"].toString());
+  m_activities[source]->setCurrent(data["Current"].toBool());
+}
+
+void ActivityManager::activityAdded(QString id) {
   // create a new activity object
   Activity *activity = new Activity(id);
   // add activity to the list
@@ -46,31 +56,13 @@ void ActivityManager::addActivity(QString id) {
   m_widget->setMinimumSize(200, m_activities.size() * 38);
 }
 
-void ActivityManager::removeActivity(QString id) {
+void ActivityManager::activityRemoved(QString id) {
   if (!m_activities.contains(id))
     return;
   // delete the activity
   delete m_activities.take(id);
   // update widget minimum size
   m_widget->setMinimumSize(200, m_activities.size() * 38);
-}
-
-void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data) {
-  if (!m_activities.contains(source))
-    return;
-  // update activity info
-  m_activities[source]->setName(data["Name"].toString());
-  m_activities[source]->setState(data["State"].toString());
-  m_activities[source]->setIcon(data["Icon"].toString());
-  m_activities[source]->setCurrent(data["Current"].toBool());
-}
-
-void ActivityManager::sourceAdded(QString source) {
-  addActivity(source);
-}
-
-void ActivityManager::sourceRemoved(QString source) {
-  removeActivity(source);
 }
 
 void ActivityManager::startActivity(QString id) {
