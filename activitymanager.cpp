@@ -79,6 +79,7 @@ void ActivityManager::startActivity(QString id) {
 }
 
 void ActivityManager::stopActivity(QString id) {
+  // TODO: when activity is stopped, take a screenshot and use that icon
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
   service->startOperationCall(service->operationDescription("stop"));
 }
