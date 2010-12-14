@@ -46,8 +46,8 @@ void ActivityManager::activityAdded(QString id) {
   // connect activity update signal
   dataEngine("org.kde.activities")->connectSource(id, this);
   // connect activity start/stop signals
-  connect(activity, SIGNAL(startActivity(QString)), this, SLOT(startActivity(QString)));
-  connect(activity, SIGNAL(stopActivity(QString)), this, SLOT(stopActivity(QString)));
+  connect(activity, SIGNAL(startActivity(QString)), this, SLOT(start(QString)));
+  connect(activity, SIGNAL(stopActivity(QString)), this, SLOT(stop(QString)));
   connect(activity, SIGNAL(setCurrent(QString)), this, SLOT(setCurrent(QString)));
   // show activity in the popup widget
   QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout *>(m_widget->layout());
@@ -63,6 +63,13 @@ void ActivityManager::activityRemoved(QString id) {
   delete m_activities.take(id);
   // update widget minimum size
   m_widget->setMinimumSize(200, m_activities.size() * 38);
+}
+
+void ActivityManager::add(QString id, QString name) {
+  Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
+  KConfigGroup op = service->operationDescription("add");
+  op.writeEntry("Name", name);
+  service->startOperationCall(op);
 }
 
 void ActivityManager::setCurrent(QString id) {
@@ -85,6 +92,20 @@ void ActivityManager::setName(QString id, QString name) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
   KConfigGroup op = service->operationDescription("setName");
   op.writeEntry("Name", name);
+  service->startOperationCall(op);
+}
+
+void ActivityManager::setIcon(QString id, QString name) {
+  Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
+  KConfigGroup op = service->operationDescription("setIcon");
+  op.writeEntry("Name", name);
+  service->startOperationCall(op);
+}
+
+void ActivityManager::remove(QString id) {
+  Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
+  KConfigGroup op = service->operationDescription("remove");
+  op.writeEntry("Id", id);
   service->startOperationCall(op);
 }
 
