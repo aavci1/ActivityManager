@@ -35,9 +35,14 @@ QGraphicsLinearLayout *Activity::layout() {
   return m_layout;
 }
 
+QString Activity::name() {
+  return m_name;
+}
+
 void Activity::setName(QString name) {
+  m_name = name;
   // update label
-  m_label->setText(name);
+  m_label->setText(m_name);
 }
 
 void Activity::setIcon(QString icon) {

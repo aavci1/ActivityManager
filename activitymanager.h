@@ -35,6 +35,7 @@ public slots:
 
 private:
   QHash<QString, Activity *> m_activities;
+  QStringList m_names;
 };
 
 #endif

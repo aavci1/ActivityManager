@@ -16,6 +16,7 @@ public:
 
   QGraphicsLinearLayout *layout();
 
+  QString name();
   void setName(QString name);
   void setIcon(QString icon);
   void setCurrent(bool current);
@@ -35,6 +36,7 @@ private:
   Plasma::IconWidget *m_status;
   Plasma::IconWidget *m_label;
   QString m_id;
+  QString m_name;
   QString m_state;
 };
 

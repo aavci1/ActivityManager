@@ -51,11 +51,27 @@ void ActivityManager::initExtenderItem(Plasma::ExtenderItem *item) {
 void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data) {
   if (!m_activities.contains(source))
     return;
+  QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout *>(static_cast<QGraphicsWidget *>(extender()->item("Activities")->widget())->layout());
+  Activity *activity = m_activities[source];
+  // remove activity fromt the previous location
+  if (activity->name() != "") {
+    m_names.removeAll(activity->name());
+    layout->removeItem(activity->layout());
+  }
   // update activity info
-  m_activities[source]->setName(data["Name"].toString());
-  m_activities[source]->setState(data["State"].toString());
-  m_activities[source]->setIcon(data["Icon"].toString());
-  m_activities[source]->setCurrent(data["Current"].toBool());
+  activity->setName(data["Name"].toString());
+  activity->setState(data["State"].toString());
+  activity->setIcon(data["Icon"].toString());
+  activity->setCurrent(data["Current"].toBool());
+  // if activity name is not null
+  if (activity->name() != "") {
+    // append to the name list
+    m_names.append(activity->name());
+    // sort the list
+    qSort(m_names);
+    // insert the activity at the correct location
+    layout->insertItem(m_names.indexOf(activity->name()), activity->layout());
+  }
 }
 
 void ActivityManager::activityAdded(QString id) {
@@ -69,9 +85,6 @@ void ActivityManager::activityAdded(QString id) {
   connect(activity, SIGNAL(startActivity(QString)), this, SLOT(start(QString)));
   connect(activity, SIGNAL(stopActivity(QString)), this, SLOT(stop(QString)));
   connect(activity, SIGNAL(setCurrent(QString)), this, SLOT(setCurrent(QString)));
-  // show activity in the popup widget
-  QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout *>(static_cast<QGraphicsWidget *>(extender()->item("Activities")->widget())->layout());
-  layout->addItem(activity->layout());
   // HACK: correctly update minimum height without using hardcoded numbers
   // update widget minimum size
   extender()->setMinimumHeight(m_activities.size() * 38 + 40);
