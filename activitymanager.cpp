@@ -11,6 +11,7 @@
 
 ActivityManager::ActivityManager(QObject *parent, const QVariantList &args): Plasma::PopupApplet(parent, args), m_widget(0) {
   setPopupIcon("plasma");
+  setAspectRatioMode(Plasma::IgnoreAspectRatio);
 }
 
 void ActivityManager::init() {
@@ -69,8 +70,9 @@ void ActivityManager::activityAdded(QString id) {
   // show activity in the popup widget
   QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout *>(m_widget->layout());
   layout->addItem(activity->layout());
+  // HACK: correctly update minimum height without using hardcoded numbers
   // update widget minimum size
-  m_widget->setMinimumSize(200, m_activities.size() * 38);
+  extender()->setMinimumHeight(m_activities.size() * 38 + 40);
 }
 
 void ActivityManager::activityRemoved(QString id) {
@@ -78,8 +80,10 @@ void ActivityManager::activityRemoved(QString id) {
     return;
   // delete the activity
   delete m_activities.take(id);
+  // HACK: correctly update minimum height without using hardcoded numbers
   // update widget minimum size
-  m_widget->setMinimumSize(200, m_activities.size() * 38);
+  extender()->setMinimumHeight(m_activities.size() * 38 + 40);
+  extender()->setPreferredHeight(m_activities.size() * 38 + 40);
 }
 
 void ActivityManager::add(QString id, QString name) {
