@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Activity Manager
 Comment=Manage your activities
+Icon=plasma
 Type=Service
 ServiceTypes=Plasma/Applet
 
