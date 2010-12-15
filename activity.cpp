@@ -5,6 +5,7 @@
 Activity::Activity(QString id) : QObject(), m_id(id) {
   m_layout = new QGraphicsLinearLayout();
   m_layout->setOrientation(Qt::Horizontal);
+  // TODO: instead of a status icon use the activity icon and overlay the start/stop icons
   // create status icon
   m_status = new Plasma::IconWidget();
   m_status->setOrientation(Qt::Horizontal);
