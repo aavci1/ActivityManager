@@ -2,10 +2,11 @@
 #define ACTIVITYMANAGER_H
 
 #include <Plasma/DataEngine>
+#include <Plasma/ExtenderItem>
 #include <Plasma/PopupApplet>
 
-#include <QMap>
 #include <QGraphicsWidget>
+#include <QMap>
 
 class Activity;
 
@@ -15,8 +16,7 @@ public:
   ActivityManager(QObject *, const QVariantList &);
 
   void init();
-
-  QGraphicsWidget *graphicsWidget() { return m_widget; }
+  void initExtenderItem(Plasma::ExtenderItem *item);
 
 public slots:
   void dataUpdated(QString source, Plasma::DataEngine::Data data);
