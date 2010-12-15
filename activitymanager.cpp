@@ -3,24 +3,28 @@
 #include "activity.h"
 
 #include <Plasma/Extender>
+#include <Plasma/ExtenderItem>
 #include <Plasma/Service>
 #include <Plasma/ServiceJob>
 
 #include <QGraphicsLinearLayout>
 #include <QString>
 
-ActivityManager::ActivityManager(QObject *parent, const QVariantList &args): Plasma::PopupApplet(parent, args), m_widget(0) {
+ActivityManager::ActivityManager(QObject *parent, const QVariantList &args): Plasma::PopupApplet(parent, args) {
   setPopupIcon("plasma");
   setAspectRatioMode(Plasma::IgnoreAspectRatio);
 }
 
 void ActivityManager::init() {
   extender()->setEmptyExtenderMessage(i18n("No Activities..."));
-  // add an extender item
-  Plasma::ExtenderItem *item = new Plasma::ExtenderItem(extender());
-  initExtenderItem(item);
-  // give item a title
-  item->setTitle("Activities");
+  if (extender()->item("Activities") == 0) {
+    // create the item
+    Plasma::ExtenderItem *item = new Plasma::ExtenderItem(extender());
+    initExtenderItem(item);
+    // give item a title
+    item->setName("Activities");
+    item->setTitle("Activities");
+  }
   // connect data sources
   Plasma::DataEngine *engine = dataEngine("org.kde.activities");
   foreach (const QString source, engine->sources())
@@ -32,18 +36,16 @@ void ActivityManager::init() {
 }
 
 void ActivityManager::initExtenderItem(Plasma::ExtenderItem *item) {
-  if (m_widget == 0) {
-    // create the widget
-    m_widget = new QGraphicsWidget(this);
-    m_widget->setMinimumSize(QSizeF(250, 45));
-    m_widget->setPreferredSize(QSizeF(250, 45));
-    // create the layout
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(m_widget);
-    layout->setOrientation(Qt::Vertical);
-    m_widget->setLayout(layout);
-  }
+  // create the widget
+  QGraphicsWidget *widget = new QGraphicsWidget(this);
+  widget->setMinimumSize(QSizeF(250, 45));
+  widget->setPreferredSize(QSizeF(250, 45));
+  // create the layout
+  QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(widget);
+  layout->setOrientation(Qt::Vertical);
+  widget->setLayout(layout);
   // set up the widget
-  item->setWidget(m_widget);
+  item->setWidget(widget);
 }
 
 void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data) {
@@ -68,7 +70,7 @@ void ActivityManager::activityAdded(QString id) {
   connect(activity, SIGNAL(stopActivity(QString)), this, SLOT(stop(QString)));
   connect(activity, SIGNAL(setCurrent(QString)), this, SLOT(setCurrent(QString)));
   // show activity in the popup widget
-  QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout *>(m_widget->layout());
+  QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout *>(static_cast<QGraphicsWidget *>(extender()->item("Activities")->widget())->layout());
   layout->addItem(activity->layout());
   // HACK: correctly update minimum height without using hardcoded numbers
   // update widget minimum size

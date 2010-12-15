@@ -2,13 +2,15 @@
 #define ACTIVITYMANAGER_H
 
 #include <Plasma/DataEngine>
-#include <Plasma/ExtenderItem>
 #include <Plasma/PopupApplet>
 
-#include <QGraphicsWidget>
-#include <QMap>
+#include <QHash>
 
 class Activity;
+
+namespace Plasma {
+  class ExtenderItem;
+};
 
 class ActivityManager : public Plasma::PopupApplet {
   Q_OBJECT
@@ -32,8 +34,7 @@ public slots:
   void remove(QString id);
 
 private:
-  QGraphicsWidget *m_widget;
-  QMap<QString, Activity *> m_activities;
+  QHash<QString, Activity *> m_activities;
 };
 
 #endif
