@@ -75,6 +75,7 @@ void ActivityManager::activityAdded(QString id) {
   connect(activity, SIGNAL(startActivity(QString)), this, SLOT(start(QString)));
   connect(activity, SIGNAL(stopActivity(QString)), this, SLOT(stop(QString)));
   connect(activity, SIGNAL(removeActivity(QString)), this, SLOT(remove(QString)));
+  connect(activity, SIGNAL(renameActivity(QString,QString)), this, SLOT(setName(QString,QString)));
 }
 
 void ActivityManager::activityRemoved(QString id) {

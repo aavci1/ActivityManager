@@ -2,11 +2,12 @@
 
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
+#include <Plasma/LineEdit>
 #include <Plasma/PushButton>
 
 #include <QGraphicsLinearLayout>
 
-ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_label(0), m_stateIcon(0), m_removeIcon(0), m_id(id) {
+ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_removeIcon(0), m_id(id) {
   m_layout = new QGraphicsLinearLayout(this);
   m_layout->setOrientation(Qt::Vertical);
   m_layout->setContentsMargins(0, 0, 0, 0);
@@ -35,6 +36,16 @@ ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWid
   layout->setAlignment(m_stateIcon, Qt::AlignCenter);
   // toggle running state when clicked on the icon
   connect(m_stateIcon, SIGNAL(clicked()), this, SLOT(toggleStatus()));
+  // create status icon
+  m_editIcon = new Plasma::IconWidget(this);
+  m_editIcon->setOrientation(Qt::Horizontal);
+  m_editIcon->setIcon("configure");
+  m_editIcon->setPreferredSize(16, 16);
+  m_editIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  layout->addItem(m_editIcon);
+  layout->setAlignment(m_editIcon, Qt::AlignCenter);
+  // delete activity when clicked on the delete icon
+  connect(m_editIcon, SIGNAL(clicked()), this, SLOT(beginEdit()));
   // create status icon
   m_removeIcon = new Plasma::IconWidget(this);
   m_removeIcon->setOrientation(Qt::Horizontal);
@@ -135,4 +146,54 @@ void ActivityWidget::cancelRemove() {
   m_layout->removeItem(m_removeWidget);
   // delete the confirm widget
   m_removeWidget->deleteLater();
+}
+
+void ActivityWidget::beginEdit() {
+  // create confirmation widget
+  m_editWidget = new QGraphicsWidget();
+  // create a horizontal layout
+  QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(m_editWidget);
+  layout->setOrientation(Qt::Horizontal);
+  // set the layout
+  m_editWidget->setLayout(layout);
+  // create label
+  Plasma::Label *label = new Plasma::Label(m_editWidget);
+  label->setText(i18n("Name:"));
+  layout->addItem(label);
+  // create the line edit
+  m_lineEdit = new Plasma::LineEdit(m_editWidget);
+  m_lineEdit->setText(m_name);
+  layout->addItem(m_lineEdit);
+  // create yes button
+  Plasma::PushButton *yesButton = new Plasma::PushButton(m_editWidget);
+  yesButton->setText(i18n("OK"));
+  layout->addItem(yesButton);
+  connect(yesButton, SIGNAL(clicked()), this, SLOT(acceptEdit()));
+  // create no button
+  Plasma::PushButton *noButton = new Plasma::PushButton(m_editWidget);
+  noButton->setText(i18n("Cancel"));
+  layout->addItem(noButton);
+  connect(noButton, SIGNAL(clicked()), this, SLOT(cancelEdit()));
+  // show the confirm widget
+  m_layout->addItem(m_editWidget);
+  // put the focus into the line edit
+  m_lineEdit->setFocus(Qt::OtherFocusReason);
+}
+
+void ActivityWidget::acceptEdit() {
+  // save the name
+  QString name = m_lineEdit->text();
+  // hide the edit widget
+  m_layout->removeItem(m_editWidget);
+  // delete the edit widget
+  m_editWidget->deleteLater();
+  // emit rename signal
+  emit renameActivity(m_id, name);
+}
+
+void ActivityWidget::cancelEdit() {
+  // hide the edit widget
+  m_layout->removeItem(m_editWidget);
+  // delete the edit widget
+  m_editWidget->deleteLater();
 }
