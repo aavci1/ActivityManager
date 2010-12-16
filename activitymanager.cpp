@@ -41,7 +41,7 @@ void ActivityManager::initExtenderItem(Plasma::ExtenderItem *item) {
   // create the widget
   QGraphicsWidget *widget = new QGraphicsWidget(this);
   // TODO: use the size of the longest activity name
-  widget->setPreferredWidth(250);
+  widget->setPreferredWidth(350);
   // create the layout
   QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(widget);
   layout->setOrientation(Qt::Vertical);
