@@ -2,6 +2,8 @@
 
 #include <Plasma/IconWidget>
 
+#include <QGraphicsLinearLayout>
+
 Activity::Activity(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_id(id) {
   QGraphicsLinearLayout *layout = new QGraphicsLinearLayout();
   layout->setOrientation(Qt::Horizontal);
