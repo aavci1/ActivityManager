@@ -24,7 +24,7 @@ public:
 public slots:
   void setCurrent();
   void toggleStatus();
-  void confirmRemove();
+  void beginRemove();
   void acceptRemove();
   void cancelRemove();
 

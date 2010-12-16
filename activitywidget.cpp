@@ -44,7 +44,7 @@ ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWid
   layout->addItem(m_removeIcon);
   layout->setAlignment(m_removeIcon, Qt::AlignCenter);
   // delete activity when clicked on the delete icon
-  connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(confirmRemove()));
+  connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(beginRemove()));
 }
 
 QString ActivityWidget::name() {
@@ -95,7 +95,7 @@ void ActivityWidget::toggleStatus() {
     emit stopActivity(m_id);
 }
 
-void ActivityWidget::confirmRemove() {
+void ActivityWidget::beginRemove() {
   // create confirmation widget
   m_removeWidget = new QGraphicsWidget();
   // create a horizontal layout
