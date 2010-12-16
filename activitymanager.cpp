@@ -53,24 +53,14 @@ void ActivityManager::initExtenderItem(Plasma::ExtenderItem *item) {
 void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data) {
   if (!m_activities.contains(source))
     return;
-  QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout *>(static_cast<QGraphicsWidget *>(extender()->item("Activities")->widget())->layout());
   ActivityWidget *activity = m_activities[source];
-  // remove activity fromt the previous location
-  if (activity->name() != "") {
-    m_names.removeOne(activity->name());
-    layout->removeItem(activity);
-  }
   // update activity info
   activity->setName(data["Name"].toString());
   activity->setState(data["State"].toString());
   activity->setIcon(data["Icon"].toString());
   activity->setCurrent(data["Current"].toBool());
-  // append to the name list
-  m_names.append(activity->name());
-  // sort the list
-  qSort(m_names);
-  // insert the activity at the correct location
-  layout->insertItem(m_names.indexOf(activity->name()), activity);
+  // sort activities
+  sortActivities();
 }
 
 void ActivityManager::activityAdded(QString id) {
@@ -143,6 +133,20 @@ void ActivityManager::remove(QString id) {
   op.writeEntry("Id", id);
   Plasma::ServiceJob *job = service->startOperationCall(op);
   connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
+}
+
+void ActivityManager::sortActivities() {
+  QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout *>(static_cast<QGraphicsWidget *>(extender()->item("Activities")->widget())->layout());
+  // remove all activities from the layout
+  while (layout->count())
+    layout->removeAt(0);
+  // insert all activities to a map
+  QMap<QString, ActivityWidget *> activities;
+  foreach (ActivityWidget *activity, m_activities.values())
+    activities.insertMulti(activity->name(), activity);
+  // add activities into the layout at ascending order of their names
+  foreach (ActivityWidget *activity, activities.values())
+    layout->addItem(activity);
 }
 
 K_EXPORT_PLASMA_APPLET(activitymanager, ActivityManager)

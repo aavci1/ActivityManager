@@ -34,8 +34,9 @@ public slots:
   void remove(QString id);
 
 private:
+  void sortActivities();
+
   QHash<QString, ActivityWidget *> m_activities;
-  QStringList m_names;
 };
 
 #endif
