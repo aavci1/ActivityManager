@@ -17,6 +17,8 @@ ActivityManager::ActivityManager(QObject *parent, const QVariantList &args): Pla
 
 void ActivityManager::init() {
   extender()->setEmptyExtenderMessage(i18n("No Activities..."));
+  // don't grow too much height
+  extender()->setMaximumHeight(300);
   if (extender()->item("Activities") == 0) {
     // create the item
     Plasma::ExtenderItem *item = new Plasma::ExtenderItem(extender());
@@ -38,8 +40,8 @@ void ActivityManager::init() {
 void ActivityManager::initExtenderItem(Plasma::ExtenderItem *item) {
   // create the widget
   QGraphicsWidget *widget = new QGraphicsWidget(this);
-  widget->setMinimumSize(QSizeF(250, 45));
-  widget->setPreferredSize(QSizeF(250, 45));
+  // TODO: use the size of the longest activity name
+  widget->setPreferredWidth(250);
   // create the layout
   QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(widget);
   layout->setOrientation(Qt::Vertical);
@@ -71,9 +73,6 @@ void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data)
     qSort(m_names);
     // insert the activity at the correct location
     layout->insertItem(m_names.indexOf(activity->name()), activity);
-    // HACK: correctly update minimum height without using hardcoded numbers
-    // update minimum extender height
-    extender()->setMinimumHeight(m_activities.size() * 38 + 40);
   }
 }
 
@@ -95,9 +94,6 @@ void ActivityManager::activityRemoved(QString id) {
     return;
   // delete the activity
   delete m_activities.take(id);
-  // HACK: correctly update minimum height without using hardcoded numbers
-  // update minimum extender height
-  extender()->setMinimumHeight(m_activities.size() * 38 + 40);
 }
 
 void ActivityManager::add(QString id, QString name) {
