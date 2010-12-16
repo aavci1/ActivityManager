@@ -84,9 +84,10 @@ void ActivityManager::activityAdded(QString id) {
   // connect activity update signal
   dataEngine("org.kde.activities")->connectSource(id, this);
   // connect activity start/stop signals
+  connect(activity, SIGNAL(setCurrent(QString)), this, SLOT(setCurrent(QString)));
   connect(activity, SIGNAL(startActivity(QString)), this, SLOT(start(QString)));
   connect(activity, SIGNAL(stopActivity(QString)), this, SLOT(stop(QString)));
-  connect(activity, SIGNAL(setCurrent(QString)), this, SLOT(setCurrent(QString)));
+  connect(activity, SIGNAL(removeActivity(QString)), this, SLOT(remove(QString)));
 }
 
 void ActivityManager::activityRemoved(QString id) {
@@ -141,7 +142,9 @@ void ActivityManager::setIcon(QString id, QString name) {
 
 void ActivityManager::remove(QString id) {
   Plasma::Service *service = dataEngine("org.kde.activities")->serviceForSource(id);
-  Plasma::ServiceJob *job = service->startOperationCall(service->operationDescription("remove"));
+  KConfigGroup op = service->operationDescription("remove");
+  op.writeEntry("Id", id);
+  Plasma::ServiceJob *job = service->startOperationCall(op);
   connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
 }
 

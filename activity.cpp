@@ -16,7 +16,8 @@ Activity::Activity(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent),
   m_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   layout->addItem(m_label);
   layout->setAlignment(m_label, Qt::AlignCenter);
-  // TODO: instead of a status icon use the activity icon and overlay the start/stop icons
+  // setCurrent the activity when clicked on the name
+  connect(m_label, SIGNAL(clicked()), this, SLOT(setCurrent()));
   // create status icon
   m_stateIcon = new Plasma::IconWidget(this);
   m_stateIcon->setOrientation(Qt::Horizontal);
@@ -27,8 +28,16 @@ Activity::Activity(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent),
   layout->setAlignment(m_stateIcon, Qt::AlignCenter);
   // toggle running state when clicked on the icon
   connect(m_stateIcon, SIGNAL(clicked()), this, SLOT(toggleStatus()));
-  // setCurrent the activity when clicked on the name
-  connect(m_label, SIGNAL(clicked()), this, SLOT(setCurrent()));
+  // create status icon
+  m_removeIcon = new Plasma::IconWidget(this);
+  m_removeIcon->setOrientation(Qt::Horizontal);
+  m_removeIcon->setIcon("edit-delete");
+  m_removeIcon->setPreferredSize(16, 16);
+  m_removeIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  layout->addItem(m_removeIcon);
+  layout->setAlignment(m_removeIcon, Qt::AlignCenter);
+  // delete activity when clicked on the delete icon
+  connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(removeSelf()));
 }
 
 Activity::~Activity() {
@@ -80,4 +89,9 @@ void Activity::toggleStatus() {
     emit startActivity(m_id);
   else
     emit stopActivity(m_id);
+}
+
+void Activity::removeSelf() {
+  // TODO: ask for confirmation
+  emit removeActivity(m_id);
 }
