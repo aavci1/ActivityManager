@@ -6,8 +6,8 @@ include(KDE4Defaults)
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
 
-set(activitymanager_SRCS 
-    activity.cpp 
+set(activitymanager_SRCS
+    activitywidget.cpp
     activitymanager.cpp)
 
 kde4_add_plugin(plasma_applet_activitymanager ${activitymanager_SRCS})

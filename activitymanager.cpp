@@ -1,6 +1,6 @@
 #include "activitymanager.h"
 
-#include "activity.h"
+#include "activitywidget.h"
 
 #include <Plasma/Extender>
 #include <Plasma/ExtenderItem>
@@ -54,7 +54,7 @@ void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data)
   if (!m_activities.contains(source))
     return;
   QGraphicsLinearLayout *layout = static_cast<QGraphicsLinearLayout *>(static_cast<QGraphicsWidget *>(extender()->item("Activities")->widget())->layout());
-  Activity *activity = m_activities[source];
+  ActivityWidget *activity = m_activities[source];
   // remove activity fromt the previous location
   if (activity->name() != "") {
     m_names.removeOne(activity->name());
@@ -78,7 +78,7 @@ void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data)
 
 void ActivityManager::activityAdded(QString id) {
   // create a new activity object
-  Activity *activity = new Activity(id);
+  ActivityWidget *activity = new ActivityWidget(id);
   // add activity to the list
   m_activities.insert(id, activity);
   // connect activity update signal

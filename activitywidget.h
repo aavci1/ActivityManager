@@ -1,5 +1,5 @@
-#ifndef ACTIVITY_H
-#define ACTIVITY_H
+#ifndef ACTIVITYWIDGET_H
+#define ACTIVITYWIDGET_H
 
 #include <QGraphicsWidget>
 #include <QString>
@@ -8,11 +8,11 @@ namespace Plasma {
   class IconWidget;
 };
 
-class Activity : public QGraphicsWidget {
+class ActivityWidget : public QGraphicsWidget {
   Q_OBJECT
 public:
-  Activity(QString id, QGraphicsItem *parent = 0);
-  ~Activity();
+  ActivityWidget(QString id, QGraphicsItem *parent = 0);
+  ~ActivityWidget();
 
   QString name();
   void setName(QString name);

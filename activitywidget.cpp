@@ -1,10 +1,10 @@
-#include "activity.h"
+#include "activitywidget.h"
 
 #include <Plasma/IconWidget>
 
 #include <QGraphicsLinearLayout>
 
-Activity::Activity(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_id(id) {
+ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_id(id) {
   QGraphicsLinearLayout *layout = new QGraphicsLinearLayout();
   layout->setOrientation(Qt::Horizontal);
   layout->setContentsMargins(0, 0, 0, 0);
@@ -40,20 +40,20 @@ Activity::Activity(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent),
   connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(removeSelf()));
 }
 
-Activity::~Activity() {
+ActivityWidget::~ActivityWidget() {
 }
 
-QString Activity::name() {
+QString ActivityWidget::name() {
   return m_name;
 }
 
-void Activity::setName(QString name) {
+void ActivityWidget::setName(QString name) {
   m_name = name;
   // update label
   m_label->setText(m_name);
 }
 
-void Activity::setIcon(QString icon) {
+void ActivityWidget::setIcon(QString icon) {
   // update label
   if (icon != "")
     m_label->setIcon(icon);
@@ -61,7 +61,7 @@ void Activity::setIcon(QString icon) {
     m_label->setIcon("plasma");
 }
 
-void Activity::setCurrent(bool current) {
+void ActivityWidget::setCurrent(bool current) {
   // update label
   QFont font = m_label->font();
   if (current)
@@ -71,7 +71,7 @@ void Activity::setCurrent(bool current) {
   m_label->setFont(font);
 }
 
-void Activity::setState(QString state) {
+void ActivityWidget::setState(QString state) {
   m_state = state;
   // update icon
   if (m_state == "Stopped")
@@ -80,18 +80,18 @@ void Activity::setState(QString state) {
     m_stateIcon->setIcon("media-playback-stop");
 }
 
-void Activity::setCurrent() {
+void ActivityWidget::setCurrent() {
   emit setCurrent(m_id);
 }
 
-void Activity::toggleStatus() {
+void ActivityWidget::toggleStatus() {
   if (m_state == "Stopped")
     emit startActivity(m_id);
   else
     emit stopActivity(m_id);
 }
 
-void Activity::removeSelf() {
+void ActivityWidget::removeSelf() {
   // TODO: ask for confirmation
   emit removeActivity(m_id);
 }

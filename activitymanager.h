@@ -6,7 +6,7 @@
 
 #include <QHash>
 
-class Activity;
+class ActivityWidget;
 
 namespace Plasma {
   class ExtenderItem;
@@ -34,7 +34,7 @@ public slots:
   void remove(QString id);
 
 private:
-  QHash<QString, Activity *> m_activities;
+  QHash<QString, ActivityWidget *> m_activities;
   QStringList m_names;
 };
 
