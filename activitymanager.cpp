@@ -30,8 +30,7 @@ void ActivityManager::init() {
   // connect data sources
   Plasma::DataEngine *engine = dataEngine("org.kde.activities");
   foreach (const QString source, engine->sources())
-    if (source != "Status")
-      activityAdded(source);
+    activityAdded(source);
   // activity addition and removal
   connect(engine, SIGNAL(sourceAdded(QString)), this, SLOT(activityAdded(QString)));
   connect(engine, SIGNAL(sourceRemoved(QString)), this, SLOT(activityRemoved(QString)));
@@ -64,6 +63,9 @@ void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data)
 }
 
 void ActivityManager::activityAdded(QString id) {
+  // skip the Status source
+  if (id == "Status")
+    return;
   // create a new activity object
   ActivityWidget *activity = new ActivityWidget(id);
   // add activity to the list
