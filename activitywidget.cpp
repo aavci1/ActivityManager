@@ -1,14 +1,21 @@
 #include "activitywidget.h"
 
 #include <Plasma/IconWidget>
+#include <Plasma/Label>
+#include <Plasma/PushButton>
 
 #include <QGraphicsLinearLayout>
 
-ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_id(id) {
-  QGraphicsLinearLayout *layout = new QGraphicsLinearLayout();
+ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_layout(0), m_confirmWidget(0), m_label(0), m_stateIcon(0), m_removeIcon(0), m_id(id) {
+  m_layout = new QGraphicsLinearLayout(this);
+  m_layout->setOrientation(Qt::Vertical);
+  m_layout->setContentsMargins(0, 0, 0, 0);
+  setLayout(m_layout);
+  // create activity layout
+  QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(m_layout);
   layout->setOrientation(Qt::Horizontal);
   layout->setContentsMargins(0, 0, 0, 0);
-  this->setLayout(layout);
+  m_layout->addItem(layout);
   // create label
   m_label = new Plasma::IconWidget(this);
   m_label->setOrientation(Qt::Horizontal);
@@ -37,10 +44,7 @@ ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWid
   layout->addItem(m_removeIcon);
   layout->setAlignment(m_removeIcon, Qt::AlignCenter);
   // delete activity when clicked on the delete icon
-  connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(removeSelf()));
-}
-
-ActivityWidget::~ActivityWidget() {
+  connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(confirmRemove()));
 }
 
 QString ActivityWidget::name() {
@@ -91,7 +95,44 @@ void ActivityWidget::toggleStatus() {
     emit stopActivity(m_id);
 }
 
-void ActivityWidget::removeSelf() {
-  // TODO: ask for confirmation
+void ActivityWidget::confirmRemove() {
+  // create confirmation widget
+  m_confirmWidget = new QGraphicsWidget();
+  // create a horizontal layout
+  QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(m_confirmWidget);
+  layout->setOrientation(Qt::Horizontal);
+  // set the layout
+  m_confirmWidget->setLayout(layout);
+  // create label
+  Plasma::Label *label = new Plasma::Label(m_confirmWidget);
+  label->setText(i18n("Do you really want to remove this activity?"));
+  layout->addItem(label);
+  // create yes button
+  Plasma::PushButton *yesButton = new Plasma::PushButton(m_confirmWidget);
+  yesButton->setText(i18n("Yes"));
+  layout->addItem(yesButton);
+  connect(yesButton, SIGNAL(clicked()), this, SLOT(acceptRemove()));
+  // create no button
+  Plasma::PushButton *noButton = new Plasma::PushButton(m_confirmWidget);
+  noButton->setText(i18n("No"));
+  layout->addItem(noButton);
+  connect(noButton, SIGNAL(clicked()), this, SLOT(cancelRemove()));
+  // show the confirm widget
+  m_layout->addItem(m_confirmWidget);
+}
+
+void ActivityWidget::acceptRemove() {
+  // hide the confirm widget
+  m_layout->removeItem(m_confirmWidget);
+  // delete the confirm widget
+  m_confirmWidget->deleteLater();
+  // emit delete signal
   emit removeActivity(m_id);
+}
+
+void ActivityWidget::cancelRemove() {
+  // hide the confirm widget
+  m_layout->removeItem(m_confirmWidget);
+  // delete the confirm widget
+  m_confirmWidget->deleteLater();
 }

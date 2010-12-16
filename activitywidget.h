@@ -8,11 +8,12 @@ namespace Plasma {
   class IconWidget;
 };
 
+class QGraphicsLinearLayout;
+
 class ActivityWidget : public QGraphicsWidget {
   Q_OBJECT
 public:
   ActivityWidget(QString id, QGraphicsItem *parent = 0);
-  ~ActivityWidget();
 
   QString name();
   void setName(QString name);
@@ -23,7 +24,9 @@ public:
 public slots:
   void setCurrent();
   void toggleStatus();
-  void removeSelf();
+  void confirmRemove();
+  void acceptRemove();
+  void cancelRemove();
 
 signals:
   void setCurrent(QString id);
@@ -32,6 +35,8 @@ signals:
   void removeActivity(QString id);
 
 private:
+  QGraphicsLinearLayout *m_layout;
+  QGraphicsWidget *m_confirmWidget;
   Plasma::IconWidget *m_label;
   Plasma::IconWidget *m_stateIcon;
   Plasma::IconWidget *m_removeIcon;
