@@ -6,7 +6,7 @@
 
 #include <QGraphicsLinearLayout>
 
-ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_layout(0), m_confirmWidget(0), m_label(0), m_stateIcon(0), m_removeIcon(0), m_id(id) {
+ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_label(0), m_stateIcon(0), m_removeIcon(0), m_id(id) {
   m_layout = new QGraphicsLinearLayout(this);
   m_layout->setOrientation(Qt::Vertical);
   m_layout->setContentsMargins(0, 0, 0, 0);
@@ -97,42 +97,42 @@ void ActivityWidget::toggleStatus() {
 
 void ActivityWidget::confirmRemove() {
   // create confirmation widget
-  m_confirmWidget = new QGraphicsWidget();
+  m_removeWidget = new QGraphicsWidget();
   // create a horizontal layout
-  QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(m_confirmWidget);
+  QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(m_removeWidget);
   layout->setOrientation(Qt::Horizontal);
   // set the layout
-  m_confirmWidget->setLayout(layout);
+  m_removeWidget->setLayout(layout);
   // create label
-  Plasma::Label *label = new Plasma::Label(m_confirmWidget);
+  Plasma::Label *label = new Plasma::Label(m_removeWidget);
   label->setText(i18n("Do you really want to remove this activity?"));
   layout->addItem(label);
   // create yes button
-  Plasma::PushButton *yesButton = new Plasma::PushButton(m_confirmWidget);
+  Plasma::PushButton *yesButton = new Plasma::PushButton(m_removeWidget);
   yesButton->setText(i18n("Yes"));
   layout->addItem(yesButton);
   connect(yesButton, SIGNAL(clicked()), this, SLOT(acceptRemove()));
   // create no button
-  Plasma::PushButton *noButton = new Plasma::PushButton(m_confirmWidget);
+  Plasma::PushButton *noButton = new Plasma::PushButton(m_removeWidget);
   noButton->setText(i18n("No"));
   layout->addItem(noButton);
   connect(noButton, SIGNAL(clicked()), this, SLOT(cancelRemove()));
   // show the confirm widget
-  m_layout->addItem(m_confirmWidget);
+  m_layout->addItem(m_removeWidget);
 }
 
 void ActivityWidget::acceptRemove() {
   // hide the confirm widget
-  m_layout->removeItem(m_confirmWidget);
+  m_layout->removeItem(m_removeWidget);
   // delete the confirm widget
-  m_confirmWidget->deleteLater();
+  m_removeWidget->deleteLater();
   // emit delete signal
   emit removeActivity(m_id);
 }
 
 void ActivityWidget::cancelRemove() {
   // hide the confirm widget
-  m_layout->removeItem(m_confirmWidget);
+  m_layout->removeItem(m_removeWidget);
   // delete the confirm widget
-  m_confirmWidget->deleteLater();
+  m_removeWidget->deleteLater();
 }

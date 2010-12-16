@@ -36,7 +36,7 @@ signals:
 
 private:
   QGraphicsLinearLayout *m_layout;
-  QGraphicsWidget *m_confirmWidget;
+  QGraphicsWidget *m_removeWidget;
   Plasma::IconWidget *m_label;
   Plasma::IconWidget *m_stateIcon;
   Plasma::IconWidget *m_removeIcon;
