@@ -30,7 +30,7 @@ signals:
   void stopActivity(QString id);
 
 private:
-  Plasma::IconWidget *m_status;
+  Plasma::IconWidget *m_stateIcon;
   Plasma::IconWidget *m_label;
   QString m_id;
   QString m_name;

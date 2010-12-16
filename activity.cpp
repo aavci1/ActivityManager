@@ -9,22 +9,24 @@ Activity::Activity(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent),
   layout->setOrientation(Qt::Horizontal);
   layout->setContentsMargins(0, 0, 0, 0);
   this->setLayout(layout);
-  // TODO: instead of a status icon use the activity icon and overlay the start/stop icons
-  // create status icon
-  m_status = new Plasma::IconWidget(this);
-  m_status->setOrientation(Qt::Horizontal);
-  m_status->setIcon("media-playback-start");
-  m_status->setMinimumHeight(32);
-  m_status->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  layout->addItem(m_status);
   // create label
   m_label = new Plasma::IconWidget(this);
   m_label->setOrientation(Qt::Horizontal);
-  m_label->setMinimumHeight(32);
+  m_label->setPreferredSize(32, 32);
   m_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   layout->addItem(m_label);
+  layout->setAlignment(m_label, Qt::AlignCenter);
+  // TODO: instead of a status icon use the activity icon and overlay the start/stop icons
+  // create status icon
+  m_stateIcon = new Plasma::IconWidget(this);
+  m_stateIcon->setOrientation(Qt::Horizontal);
+  m_stateIcon->setIcon("media-playback-start");
+  m_stateIcon->setPreferredSize(24, 24);
+  m_stateIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  layout->addItem(m_stateIcon);
+  layout->setAlignment(m_stateIcon, Qt::AlignCenter);
   // toggle running state when clicked on the icon
-  connect(m_status, SIGNAL(clicked()), this, SLOT(toggleStatus()));
+  connect(m_stateIcon, SIGNAL(clicked()), this, SLOT(toggleStatus()));
   // setCurrent the activity when clicked on the name
   connect(m_label, SIGNAL(clicked()), this, SLOT(setCurrent()));
 }
@@ -64,9 +66,9 @@ void Activity::setState(QString state) {
   m_state = state;
   // update icon
   if (m_state == "Stopped")
-    m_status->setIcon("media-playback-start");
+    m_stateIcon->setIcon("media-playback-start");
   else
-    m_status->setIcon("media-playback-stop");
+    m_stateIcon->setIcon("media-playback-stop");
 }
 
 void Activity::setCurrent() {
