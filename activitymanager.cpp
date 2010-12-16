@@ -56,7 +56,7 @@ void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data)
   // remove activity fromt the previous location
   if (activity->name() != "") {
     m_names.removeAll(activity->name());
-    layout->removeItem(activity->layout());
+    layout->removeItem(activity);
   }
   // update activity info
   activity->setName(data["Name"].toString());
@@ -70,7 +70,10 @@ void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data)
     // sort the list
     qSort(m_names);
     // insert the activity at the correct location
-    layout->insertItem(m_names.indexOf(activity->name()), activity->layout());
+    layout->insertItem(m_names.indexOf(activity->name()), activity);
+    // HACK: correctly update minimum height without using hardcoded numbers
+    // update minimum extender height
+    extender()->setMinimumHeight(m_activities.size() * 38 + 40);
   }
 }
 
@@ -85,9 +88,6 @@ void ActivityManager::activityAdded(QString id) {
   connect(activity, SIGNAL(startActivity(QString)), this, SLOT(start(QString)));
   connect(activity, SIGNAL(stopActivity(QString)), this, SLOT(stop(QString)));
   connect(activity, SIGNAL(setCurrent(QString)), this, SLOT(setCurrent(QString)));
-  // HACK: correctly update minimum height without using hardcoded numbers
-  // update widget minimum size
-  extender()->setMinimumHeight(m_activities.size() * 38 + 40);
 }
 
 void ActivityManager::activityRemoved(QString id) {
@@ -96,9 +96,8 @@ void ActivityManager::activityRemoved(QString id) {
   // delete the activity
   delete m_activities.take(id);
   // HACK: correctly update minimum height without using hardcoded numbers
-  // update widget minimum size
+  // update minimum extender height
   extender()->setMinimumHeight(m_activities.size() * 38 + 40);
-  extender()->setPreferredHeight(m_activities.size() * 38 + 40);
 }
 
 void ActivityManager::add(QString id, QString name) {

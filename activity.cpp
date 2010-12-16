@@ -2,23 +2,25 @@
 
 #include <Plasma/IconWidget>
 
-Activity::Activity(QString id) : QObject(), m_id(id) {
-  m_layout = new QGraphicsLinearLayout();
-  m_layout->setOrientation(Qt::Horizontal);
+Activity::Activity(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_id(id) {
+  QGraphicsLinearLayout *layout = new QGraphicsLinearLayout();
+  layout->setOrientation(Qt::Horizontal);
+  layout->setContentsMargins(0, 0, 0, 0);
+  this->setLayout(layout);
   // TODO: instead of a status icon use the activity icon and overlay the start/stop icons
   // create status icon
-  m_status = new Plasma::IconWidget();
+  m_status = new Plasma::IconWidget(this);
   m_status->setOrientation(Qt::Horizontal);
   m_status->setIcon("media-playback-start");
   m_status->setMinimumHeight(32);
   m_status->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  m_layout->addItem(m_status);
+  layout->addItem(m_status);
   // create label
-  m_label = new Plasma::IconWidget();
+  m_label = new Plasma::IconWidget(this);
   m_label->setOrientation(Qt::Horizontal);
   m_label->setMinimumHeight(32);
   m_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-  m_layout->addItem(m_label);
+  layout->addItem(m_label);
   // toggle running state when clicked on the icon
   connect(m_status, SIGNAL(clicked()), this, SLOT(toggleStatus()));
   // setCurrent the activity when clicked on the name
@@ -26,13 +28,6 @@ Activity::Activity(QString id) : QObject(), m_id(id) {
 }
 
 Activity::~Activity() {
-  delete m_layout;
-  delete m_status;
-  delete m_label;
-}
-
-QGraphicsLinearLayout *Activity::layout() {
-  return m_layout;
 }
 
 QString Activity::name() {

@@ -2,19 +2,18 @@
 #define ACTIVITY_H
 
 #include <QGraphicsLinearLayout>
+#include <QGraphicsWidget>
 #include <QString>
 
 namespace Plasma {
   class IconWidget;
 };
 
-class Activity : public QObject {
+class Activity : public QGraphicsWidget {
   Q_OBJECT
 public:
-  Activity(QString id);
+  Activity(QString id, QGraphicsItem *parent = 0);
   ~Activity();
-
-  QGraphicsLinearLayout *layout();
 
   QString name();
   void setName(QString name);
@@ -32,7 +31,6 @@ signals:
   void stopActivity(QString id);
 
 private:
-  QGraphicsLinearLayout *m_layout;
   Plasma::IconWidget *m_status;
   Plasma::IconWidget *m_label;
   QString m_id;
