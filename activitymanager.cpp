@@ -57,7 +57,7 @@ void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data)
   Activity *activity = m_activities[source];
   // remove activity fromt the previous location
   if (activity->name() != "") {
-    m_names.removeAll(activity->name());
+    m_names.removeOne(activity->name());
     layout->removeItem(activity);
   }
   // update activity info
