@@ -65,15 +65,12 @@ void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data)
   activity->setState(data["State"].toString());
   activity->setIcon(data["Icon"].toString());
   activity->setCurrent(data["Current"].toBool());
-  // if activity name is not null
-  if (activity->name() != "") {
-    // append to the name list
-    m_names.append(activity->name());
-    // sort the list
-    qSort(m_names);
-    // insert the activity at the correct location
-    layout->insertItem(m_names.indexOf(activity->name()), activity);
-  }
+  // append to the name list
+  m_names.append(activity->name());
+  // sort the list
+  qSort(m_names);
+  // insert the activity at the correct location
+  layout->insertItem(m_names.indexOf(activity->name()), activity);
 }
 
 void ActivityManager::activityAdded(QString id) {
