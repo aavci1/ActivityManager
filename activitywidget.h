@@ -14,7 +14,7 @@ class QGraphicsLinearLayout;
 class ActivityWidget : public QGraphicsWidget {
   Q_OBJECT
 public:
-  ActivityWidget(QString id, QGraphicsItem *parent = 0);
+  ActivityWidget(QGraphicsItem *parent, QString id);
 
   QString name();
   void setName(QString name);
@@ -31,11 +31,13 @@ public slots:
   void beginEdit();
   void acceptEdit();
   void cancelEdit();
+  void beginAdd();
 
 signals:
   void setCurrent(QString id);
   void startActivity(QString id);
   void stopActivity(QString id);
+  void addActivity(QString id);
   void removeActivity(QString id);
   void renameActivity(QString id, QString name);
 
@@ -46,6 +48,7 @@ private:
   Plasma::LineEdit *m_lineEdit;
   Plasma::IconWidget *m_label;
   Plasma::IconWidget *m_stateIcon;
+  Plasma::IconWidget *m_addIcon;
   Plasma::IconWidget *m_editIcon;
   Plasma::IconWidget *m_removeIcon;
   QString m_id;

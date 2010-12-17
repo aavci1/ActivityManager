@@ -25,6 +25,7 @@ public slots:
   void activityAdded(QString id);
   void activityRemoved(QString id);
 
+  void add(QString id);
   void add(QString id, QString name);
   void setCurrent(QString id);
   void stop(QString id);

@@ -67,7 +67,7 @@ void ActivityManager::activityAdded(QString id) {
   if (id == "Status")
     return;
   // create a new activity object
-  ActivityWidget *activity = new ActivityWidget(id);
+  ActivityWidget *activity = new ActivityWidget(extender()->item("Activities"), id);
   // add activity to the list
   m_activities.insert(id, activity);
   // connect activity update signal
@@ -76,6 +76,7 @@ void ActivityManager::activityAdded(QString id) {
   connect(activity, SIGNAL(setCurrent(QString)), this, SLOT(setCurrent(QString)));
   connect(activity, SIGNAL(startActivity(QString)), this, SLOT(start(QString)));
   connect(activity, SIGNAL(stopActivity(QString)), this, SLOT(stop(QString)));
+  connect(activity, SIGNAL(addActivity(QString)), this, SLOT(add(QString)));
   connect(activity, SIGNAL(removeActivity(QString)), this, SLOT(remove(QString)));
   connect(activity, SIGNAL(renameActivity(QString,QString)), this, SLOT(setName(QString,QString)));
 }
@@ -85,6 +86,10 @@ void ActivityManager::activityRemoved(QString id) {
     return;
   // delete the activity
   delete m_activities.take(id);
+}
+
+void ActivityManager::add(QString id) {
+  add(id, "New Activity");
 }
 
 void ActivityManager::add(QString id, QString name) {

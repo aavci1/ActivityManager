@@ -7,7 +7,7 @@
 
 #include <QGraphicsLinearLayout>
 
-ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_removeIcon(0), m_id(id) {
+ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_addIcon(0), m_removeIcon(0), m_id(id) {
   m_layout = new QGraphicsLinearLayout(this);
   m_layout->setOrientation(Qt::Vertical);
   m_layout->setContentsMargins(0, 0, 0, 0);
@@ -30,13 +30,23 @@ ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWid
   m_stateIcon = new Plasma::IconWidget(this);
   m_stateIcon->setOrientation(Qt::Horizontal);
   m_stateIcon->setIcon("media-playback-start");
-  m_stateIcon->setPreferredSize(24, 24);
+  m_stateIcon->setPreferredSize(22, 22);
   m_stateIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   layout->addItem(m_stateIcon);
   layout->setAlignment(m_stateIcon, Qt::AlignCenter);
   // toggle running state when clicked on the icon
   connect(m_stateIcon, SIGNAL(clicked()), this, SLOT(toggleStatus()));
-  // create status icon
+  // create add icon
+  m_addIcon = new Plasma::IconWidget(this);
+  m_addIcon->setOrientation(Qt::Horizontal);
+  m_addIcon->setSvg("widgets/action-overlays", "add-normal");
+  m_addIcon->setPreferredSize(22, 22);
+  m_addIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  layout->addItem(m_addIcon);
+  layout->setAlignment(m_addIcon, Qt::AlignCenter);
+  // begin adding
+  connect(m_addIcon, SIGNAL(clicked()), this, SLOT(beginAdd()));
+  // create edit icon
   m_editIcon = new Plasma::IconWidget(this);
   m_editIcon->setOrientation(Qt::Horizontal);
   m_editIcon->setSvg("widgets/configuration-icons", "configure");
@@ -44,9 +54,9 @@ ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWid
   m_editIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   layout->addItem(m_editIcon);
   layout->setAlignment(m_editIcon, Qt::AlignCenter);
-  // delete activity when clicked on the delete icon
+  // begin editing
   connect(m_editIcon, SIGNAL(clicked()), this, SLOT(beginEdit()));
-  // create status icon
+  // create remove icon
   m_removeIcon = new Plasma::IconWidget(this);
   m_removeIcon->setOrientation(Qt::Horizontal);
   m_removeIcon->setSvg("widgets/configuration-icons", "close");
@@ -54,7 +64,7 @@ ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWid
   m_removeIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   layout->addItem(m_removeIcon);
   layout->setAlignment(m_removeIcon, Qt::AlignCenter);
-  // delete activity when clicked on the delete icon
+  // ask for confirmation
   connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(beginRemove()));
 }
 
@@ -196,4 +206,9 @@ void ActivityWidget::cancelEdit() {
   m_layout->removeItem(m_editWidget);
   // delete the edit widget
   m_editWidget->deleteLater();
+}
+
+void ActivityWidget::beginAdd() {
+  // emit add signal
+  emit addActivity(m_id);
 }
