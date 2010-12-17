@@ -23,7 +23,7 @@ void ActivityManager::init() {
     // create the item
     Plasma::ExtenderItem *item = new Plasma::ExtenderItem(extender());
     initExtenderItem(item);
-    // give item a title
+    // set item name and title
     item->setName("Activities");
     item->setTitle("Activities");
   }
