@@ -4,6 +4,7 @@
   consistent with the other plasmodis (e.g device notifier).
 * Added ability to remove activities.
 * Added ability to edit activity names.
+* Added ability to clone activities.
 0.2
 ---
 * Make sure that only one extender item exist
