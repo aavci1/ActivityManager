@@ -39,7 +39,7 @@ ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWid
   // create status icon
   m_editIcon = new Plasma::IconWidget(this);
   m_editIcon->setOrientation(Qt::Horizontal);
-  m_editIcon->setIcon("configure");
+  m_editIcon->setSvg("widgets/configuration-icons", "configure");
   m_editIcon->setPreferredSize(16, 16);
   m_editIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   layout->addItem(m_editIcon);
@@ -49,7 +49,7 @@ ActivityWidget::ActivityWidget(QString id, QGraphicsItem *parent) : QGraphicsWid
   // create status icon
   m_removeIcon = new Plasma::IconWidget(this);
   m_removeIcon->setOrientation(Qt::Horizontal);
-  m_removeIcon->setIcon("edit-delete");
+  m_removeIcon->setSvg("widgets/configuration-icons", "close");
   m_removeIcon->setPreferredSize(16, 16);
   m_removeIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   layout->addItem(m_removeIcon);
