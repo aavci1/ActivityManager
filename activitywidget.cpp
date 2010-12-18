@@ -7,7 +7,7 @@
 
 #include <QGraphicsLinearLayout>
 
-ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_addIcon(0), m_removeIcon(0), m_id(id) {
+ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_addIcon(0), m_removeIcon(0), m_id(id), m_removing(false), m_editing(false) {
   m_layout = new QGraphicsLinearLayout(this);
   m_layout->setOrientation(Qt::Vertical);
   m_layout->setContentsMargins(0, 0, 0, 0);
@@ -117,6 +117,10 @@ void ActivityWidget::toggleStatus() {
 }
 
 void ActivityWidget::beginRemove() {
+  if (m_removing)
+    return;
+  // turn on the removing flag
+  m_removing = true;
   // create confirmation widget
   m_removeWidget = new QGraphicsWidget();
   // create a horizontal layout
@@ -149,6 +153,8 @@ void ActivityWidget::acceptRemove() {
   m_removeWidget->deleteLater();
   // emit delete signal
   emit removeActivity(m_id);
+  // turn off the removing flag
+  m_removing = false;
 }
 
 void ActivityWidget::cancelRemove() {
@@ -156,9 +162,15 @@ void ActivityWidget::cancelRemove() {
   m_layout->removeItem(m_removeWidget);
   // delete the confirm widget
   m_removeWidget->deleteLater();
+  // turn off the removing flag
+  m_removing = false;
 }
 
 void ActivityWidget::beginEdit() {
+  if (m_editing)
+    return;
+  // turn on the editing flag
+  m_editing = true;
   // create confirmation widget
   m_editWidget = new QGraphicsWidget();
   // create a horizontal layout
@@ -199,6 +211,8 @@ void ActivityWidget::acceptEdit() {
   m_editWidget->deleteLater();
   // emit rename signal
   emit renameActivity(m_id, name);
+  // turn of the editing flag
+  m_editing = false;
 }
 
 void ActivityWidget::cancelEdit() {
@@ -206,6 +220,8 @@ void ActivityWidget::cancelEdit() {
   m_layout->removeItem(m_editWidget);
   // delete the edit widget
   m_editWidget->deleteLater();
+  // turn off the editing flag
+  m_editing = false;
 }
 
 void ActivityWidget::beginAdd() {
