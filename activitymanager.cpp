@@ -50,13 +50,13 @@ void ActivityManager::initExtenderItem(Plasma::ExtenderItem *item) {
   // set up the widget
   item->setWidget(widget);
   // create a lock/unlock action
-  lockAction = new QAction(item);
-  lockAction->setIcon(KIcon("object-locked"));
-  lockAction->setEnabled(true);
-  lockAction->setVisible(true);
-  lockAction->setToolTip(i18n("Lock"));
-  item->addAction("lock", lockAction);
-  connect(lockAction, SIGNAL(triggered()), this, SLOT(toggleLock()));
+  toggleLockAction = new QAction(item);
+  toggleLockAction->setIcon(KIcon("object-locked"));
+  toggleLockAction->setEnabled(true);
+  toggleLockAction->setVisible(true);
+  toggleLockAction->setToolTip(i18n("Activities are unlocked. Click to lock."));
+  item->addAction("toggleLock", toggleLockAction);
+  connect(toggleLockAction, SIGNAL(triggered()), this, SLOT(toggleLock()));
 }
 
 void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data) {
@@ -154,15 +154,15 @@ void ActivityManager::remove(QString id) {
 }
 
 void ActivityManager::toggleLock() {
-  if (lockAction->toolTip() == i18n("Activities are locked. Click to unlock.")) {
-    lockAction->setIcon(KIcon("object-unlocked"));
-    lockAction->setToolTip(i18n("Activities are unlocked. Click to lock."));
+  if (toggleLockAction->toolTip() == i18n("Activities are locked. Click to unlock.")) {
+    toggleLockAction->setIcon(KIcon("object-unlocked"));
+    toggleLockAction->setToolTip(i18n("Activities are unlocked. Click to lock."));
     // unlock activities
     foreach (ActivityWidget *activity, m_activities)
       activity->unlock();
   } else {
-    lockAction->setIcon(KIcon("object-locked"));
-    lockAction->setToolTip(i18n("Activities are locked. Click to unlock."));
+    toggleLockAction->setIcon(KIcon("object-locked"));
+    toggleLockAction->setToolTip(i18n("Activities are locked. Click to unlock."));
     // lock activities
     foreach (ActivityWidget *activity, m_activities)
       activity->lock();

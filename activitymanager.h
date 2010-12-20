@@ -43,7 +43,7 @@ private:
   void sortActivities();
 
   QHash<QString, ActivityWidget *> m_activities;
-  QAction *lockAction;
+  QAction *toggleLockAction;
 };
 
 #endif
