@@ -11,7 +11,7 @@
 #include <QString>
 
 ActivityManager::ActivityManager(QObject *parent, const QVariantList &args): Plasma::PopupApplet(parent, args) {
-  setPopupIcon("plasma");
+  setPopupIcon("preferences-activities");
   setAspectRatioMode(Plasma::IgnoreAspectRatio);
 }
 
