@@ -46,6 +46,7 @@ signals:
 
 private:
   QGraphicsLinearLayout *m_layout;
+  QGraphicsLinearLayout *m_iconLayout;
   QGraphicsWidget *m_removeWidget;
   QGraphicsWidget *m_editWidget;
   Plasma::LineEdit *m_lineEdit;

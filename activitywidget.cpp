@@ -13,17 +13,17 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_layout->setContentsMargins(0, 0, 0, 0);
   setLayout(m_layout);
   // create activity layout
-  QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(m_layout);
-  layout->setOrientation(Qt::Horizontal);
-  layout->setContentsMargins(0, 0, 0, 0);
-  m_layout->addItem(layout);
+  m_iconLayout = new QGraphicsLinearLayout(m_layout);
+  m_iconLayout->setOrientation(Qt::Horizontal);
+  m_iconLayout->setContentsMargins(0, 0, 0, 0);
+  m_layout->addItem(m_iconLayout);
   // create label
   m_label = new Plasma::IconWidget(this);
   m_label->setOrientation(Qt::Horizontal);
   m_label->setPreferredSize(32, 32);
   m_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-  layout->addItem(m_label);
-  layout->setAlignment(m_label, Qt::AlignCenter);
+  m_iconLayout->addItem(m_label);
+  m_iconLayout->setAlignment(m_label, Qt::AlignCenter);
   // setCurrent the activity when clicked on the name
   connect(m_label, SIGNAL(clicked()), this, SLOT(setCurrent()));
   // create status icon
@@ -32,8 +32,8 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_stateIcon->setIcon("media-playback-start");
   m_stateIcon->setPreferredSize(22, 22);
   m_stateIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  layout->addItem(m_stateIcon);
-  layout->setAlignment(m_stateIcon, Qt::AlignCenter);
+  m_iconLayout->addItem(m_stateIcon);
+  m_iconLayout->setAlignment(m_stateIcon, Qt::AlignCenter);
   // toggle running state when clicked on the icon
   connect(m_stateIcon, SIGNAL(clicked()), this, SLOT(toggleStatus()));
   // create add icon
@@ -42,8 +42,8 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_addIcon->setSvg("widgets/action-overlays", "add-normal");
   m_addIcon->setPreferredSize(22, 22);
   m_addIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  layout->addItem(m_addIcon);
-  layout->setAlignment(m_addIcon, Qt::AlignCenter);
+  m_iconLayout->addItem(m_addIcon);
+  m_iconLayout->setAlignment(m_addIcon, Qt::AlignCenter);
   // begin adding
   connect(m_addIcon, SIGNAL(clicked()), this, SLOT(beginAdd()));
   // create edit icon
@@ -52,8 +52,8 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_editIcon->setSvg("widgets/configuration-icons", "configure");
   m_editIcon->setPreferredSize(16, 16);
   m_editIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  layout->addItem(m_editIcon);
-  layout->setAlignment(m_editIcon, Qt::AlignCenter);
+  m_iconLayout->addItem(m_editIcon);
+  m_iconLayout->setAlignment(m_editIcon, Qt::AlignCenter);
   // begin editing
   connect(m_editIcon, SIGNAL(clicked()), this, SLOT(beginEdit()));
   // create remove icon
@@ -62,8 +62,8 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_removeIcon->setSvg("widgets/configuration-icons", "close");
   m_removeIcon->setPreferredSize(16, 16);
   m_removeIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  layout->addItem(m_removeIcon);
-  layout->setAlignment(m_removeIcon, Qt::AlignCenter);
+  m_iconLayout->addItem(m_removeIcon);
+  m_iconLayout->setAlignment(m_removeIcon, Qt::AlignCenter);
   // ask for confirmation
   connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(beginRemove()));
 }
@@ -109,12 +109,21 @@ void ActivityWidget::lock() {
   m_addIcon->setVisible(false);
   m_editIcon->setVisible(false);
   m_removeIcon->setVisible(false);
+  m_iconLayout->removeItem(m_addIcon);
+  m_iconLayout->removeItem(m_editIcon);
+  m_iconLayout->removeItem(m_removeIcon);
 }
 
 void ActivityWidget::unlock() {
   m_addIcon->setVisible(true);
   m_editIcon->setVisible(true);
   m_removeIcon->setVisible(true);
+  m_iconLayout->addItem(m_addIcon);
+  m_iconLayout->addItem(m_editIcon);
+  m_iconLayout->addItem(m_removeIcon);
+  m_iconLayout->setAlignment(m_addIcon, Qt::AlignCenter);
+  m_iconLayout->setAlignment(m_editIcon, Qt::AlignCenter);
+  m_iconLayout->setAlignment(m_removeIcon, Qt::AlignCenter);
 }
 
 void ActivityWidget::setCurrent() {
