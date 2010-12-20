@@ -8,6 +8,8 @@
 
 class ActivityWidget;
 
+class QAction;
+
 namespace Plasma {
   class ExtenderItem;
 };
@@ -34,10 +36,14 @@ public slots:
   void setIcon(QString id, QString name);
   void remove(QString id);
 
+private slots:
+  void toggleLock();
+
 private:
   void sortActivities();
 
   QHash<QString, ActivityWidget *> m_activities;
+  QAction *lockAction;
 };
 
 #endif

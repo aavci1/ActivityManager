@@ -105,6 +105,18 @@ void ActivityWidget::setState(QString state) {
     m_stateIcon->setIcon("media-playback-stop");
 }
 
+void ActivityWidget::lock() {
+  m_addIcon->setVisible(false);
+  m_editIcon->setVisible(false);
+  m_removeIcon->setVisible(false);
+}
+
+void ActivityWidget::unlock() {
+  m_addIcon->setVisible(true);
+  m_editIcon->setVisible(true);
+  m_removeIcon->setVisible(true);
+}
+
 void ActivityWidget::setCurrent() {
   emit setCurrent(m_id);
 }

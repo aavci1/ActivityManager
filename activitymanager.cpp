@@ -7,6 +7,7 @@
 #include <Plasma/Service>
 #include <Plasma/ServiceJob>
 
+#include <QAction>
 #include <QGraphicsLinearLayout>
 #include <QString>
 
@@ -22,6 +23,7 @@ void ActivityManager::init() {
   if (extender()->item("Activities") == 0) {
     // create the item
     Plasma::ExtenderItem *item = new Plasma::ExtenderItem(extender());
+    // initialize the item
     initExtenderItem(item);
     // set item name and title
     item->setName("Activities");
@@ -47,6 +49,14 @@ void ActivityManager::initExtenderItem(Plasma::ExtenderItem *item) {
   widget->setLayout(layout);
   // set up the widget
   item->setWidget(widget);
+  // create a lock/unlock action
+  lockAction = new QAction(item);
+  lockAction->setIcon(KIcon("object-locked"));
+  lockAction->setEnabled(true);
+  lockAction->setVisible(true);
+  lockAction->setToolTip(i18n("Lock"));
+  item->addAction("lock", lockAction);
+  connect(lockAction, SIGNAL(triggered()), this, SLOT(toggleLock()));
 }
 
 void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data) {
@@ -141,6 +151,22 @@ void ActivityManager::remove(QString id) {
   op.writeEntry("Id", id);
   Plasma::ServiceJob *job = service->startOperationCall(op);
   connect(job, SIGNAL(finished(KJob*)), service, SLOT(deleteLater()));
+}
+
+void ActivityManager::toggleLock() {
+  if (lockAction->toolTip() == i18n("Activities are locked. Click to unlock.")) {
+    lockAction->setIcon(KIcon("object-unlocked"));
+    lockAction->setToolTip(i18n("Activities are unlocked. Click to lock."));
+    // unlock activities
+    foreach (ActivityWidget *activity, m_activities)
+      activity->unlock();
+  } else {
+    lockAction->setIcon(KIcon("object-locked"));
+    lockAction->setToolTip(i18n("Activities are locked. Click to unlock."));
+    // lock activities
+    foreach (ActivityWidget *activity, m_activities)
+      activity->lock();
+  }
 }
 
 void ActivityManager::sortActivities() {

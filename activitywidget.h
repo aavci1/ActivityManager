@@ -22,6 +22,9 @@ public:
   void setCurrent(bool current);
   void setState(QString state);
 
+  void lock();
+  void unlock();
+
 public slots:
   void setCurrent();
   void toggleStatus();
