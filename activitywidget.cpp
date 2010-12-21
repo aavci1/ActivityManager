@@ -17,6 +17,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_label->setOrientation(Qt::Horizontal);
   m_label->setPreferredSize(32, 32);
   m_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+  m_label->setToolTip(i18n("Click to switch to this activity."));
   m_layout->addItem(m_label, 0, 0, Qt::AlignCenter);
   // setCurrent the activity when clicked on the name
   connect(m_label, SIGNAL(clicked()), this, SLOT(setCurrent()));
@@ -26,6 +27,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_stateIcon->setIcon("media-playback-start");
   m_stateIcon->setPreferredSize(22, 22);
   m_stateIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  m_stateIcon->setToolTip(i18n("Click to start this activity."));
   m_layout->addItem(m_stateIcon, 0, 1, Qt::AlignCenter);
   // toggle running state when clicked on the icon
   connect(m_stateIcon, SIGNAL(clicked()), this, SLOT(toggleStatus()));
@@ -35,6 +37,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_addIcon->setSvg("widgets/action-overlays", "add-normal");
   m_addIcon->setPreferredSize(22, 22);
   m_addIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  m_addIcon->setToolTip(i18n("Click to clone this activity."));
   m_layout->addItem(m_addIcon, 0, 2, Qt::AlignCenter);
   // begin adding
   connect(m_addIcon, SIGNAL(clicked()), this, SLOT(beginAdd()));
@@ -44,6 +47,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_editIcon->setSvg("widgets/configuration-icons", "configure");
   m_editIcon->setPreferredSize(16, 16);
   m_editIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  m_editIcon->setToolTip(i18n("Click to edit this activity."));
   m_layout->addItem(m_editIcon, 0, 3, Qt::AlignCenter);
   // begin editing
   connect(m_editIcon, SIGNAL(clicked()), this, SLOT(beginEdit()));
@@ -53,6 +57,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_removeIcon->setSvg("widgets/configuration-icons", "close");
   m_removeIcon->setPreferredSize(16, 16);
   m_removeIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  m_removeIcon->setToolTip(i18n("Click to remove this activity."));
   m_layout->addItem(m_removeIcon, 0, 4, Qt::AlignCenter);
   // ask for confirmation
   connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(beginRemove()));
@@ -89,10 +94,13 @@ void ActivityWidget::setCurrent(bool current) {
 void ActivityWidget::setState(QString state) {
   m_state = state;
   // update icon
-  if (m_state == "Stopped")
+  if (m_state == "Stopped") {
     m_stateIcon->setIcon("media-playback-start");
-  else
+    m_stateIcon->setToolTip(i18n("Click to start this activity."));
+  } else {
     m_stateIcon->setIcon("media-playback-stop");
+    m_stateIcon->setToolTip(i18n("Click to stop this activity."));
+  }
 }
 
 void ActivityWidget::lock() {
