@@ -57,8 +57,7 @@ private:
   QString m_id;
   QString m_name;
   QString m_state;
-  bool m_removing;
-  bool m_editing;
+  bool m_dialogShown;
 };
 
 #endif

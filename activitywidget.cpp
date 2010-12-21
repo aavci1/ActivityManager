@@ -8,7 +8,7 @@
 #include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
 
-ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_addIcon(0), m_removeIcon(0), m_id(id), m_removing(false), m_editing(false) {
+ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_addIcon(0), m_removeIcon(0), m_id(id), m_dialogShown(false) {
   m_layout = new QGraphicsGridLayout(this);
   m_layout->setContentsMargins(0, 0, 0, 0);
   setLayout(m_layout);
@@ -119,10 +119,10 @@ void ActivityWidget::toggleStatus() {
 }
 
 void ActivityWidget::beginRemove() {
-  if (m_removing)
+  if (m_dialogShown)
     return;
   // turn on the removing flag
-  m_removing = true;
+  m_dialogShown = true;
   // create confirmation widget
   m_removeWidget = new QGraphicsWidget();
   // create a horizontal layout
@@ -154,21 +154,21 @@ void ActivityWidget::acceptRemove() {
   // emit delete signal
   emit removeActivity(m_id);
   // turn off the removing flag
-  m_removing = false;
+  m_dialogShown = false;
 }
 
 void ActivityWidget::cancelRemove() {
   // delete the confirm widget
   m_removeWidget->deleteLater();
   // turn off the removing flag
-  m_removing = false;
+  m_dialogShown = false;
 }
 
 void ActivityWidget::beginEdit() {
-  if (m_editing)
+  if (m_dialogShown)
     return;
   // turn on the editing flag
-  m_editing = true;
+  m_dialogShown = true;
   // create confirmation widget
   m_editWidget = new QGraphicsWidget();
   // create a horizontal layout
@@ -208,14 +208,14 @@ void ActivityWidget::acceptEdit() {
   // emit rename signal
   emit renameActivity(m_id, name);
   // turn of the editing flag
-  m_editing = false;
+  m_dialogShown = false;
 }
 
 void ActivityWidget::cancelEdit() {
   // delete the edit widget
   m_editWidget->deleteLater();
   // turn off the editing flag
-  m_editing = false;
+  m_dialogShown = false;
 }
 
 void ActivityWidget::beginAdd() {
