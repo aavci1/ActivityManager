@@ -9,7 +9,7 @@ namespace Plasma {
   class LineEdit;
 };
 
-class QGraphicsLinearLayout;
+class QGraphicsGridLayout;
 
 class ActivityWidget : public QGraphicsWidget {
   Q_OBJECT
@@ -45,8 +45,7 @@ signals:
   void renameActivity(QString id, QString name);
 
 private:
-  QGraphicsLinearLayout *m_layout;
-  QGraphicsLinearLayout *m_iconLayout;
+  QGraphicsGridLayout *m_layout;
   QGraphicsWidget *m_removeWidget;
   QGraphicsWidget *m_editWidget;
   Plasma::LineEdit *m_lineEdit;

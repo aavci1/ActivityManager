@@ -5,25 +5,19 @@
 #include <Plasma/LineEdit>
 #include <Plasma/PushButton>
 
+#include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
 
 ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_addIcon(0), m_removeIcon(0), m_id(id), m_removing(false), m_editing(false) {
-  m_layout = new QGraphicsLinearLayout(this);
-  m_layout->setOrientation(Qt::Vertical);
+  m_layout = new QGraphicsGridLayout(this);
   m_layout->setContentsMargins(0, 0, 0, 0);
   setLayout(m_layout);
-  // create activity layout
-  m_iconLayout = new QGraphicsLinearLayout(m_layout);
-  m_iconLayout->setOrientation(Qt::Horizontal);
-  m_iconLayout->setContentsMargins(0, 0, 0, 0);
-  m_layout->addItem(m_iconLayout);
   // create label
   m_label = new Plasma::IconWidget(this);
   m_label->setOrientation(Qt::Horizontal);
   m_label->setPreferredSize(32, 32);
   m_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-  m_iconLayout->addItem(m_label);
-  m_iconLayout->setAlignment(m_label, Qt::AlignCenter);
+  m_layout->addItem(m_label, 0, 0, Qt::AlignCenter);
   // setCurrent the activity when clicked on the name
   connect(m_label, SIGNAL(clicked()), this, SLOT(setCurrent()));
   // create status icon
@@ -32,8 +26,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_stateIcon->setIcon("media-playback-start");
   m_stateIcon->setPreferredSize(22, 22);
   m_stateIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  m_iconLayout->addItem(m_stateIcon);
-  m_iconLayout->setAlignment(m_stateIcon, Qt::AlignCenter);
+  m_layout->addItem(m_stateIcon, 0, 1, Qt::AlignCenter);
   // toggle running state when clicked on the icon
   connect(m_stateIcon, SIGNAL(clicked()), this, SLOT(toggleStatus()));
   // create add icon
@@ -42,8 +35,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_addIcon->setSvg("widgets/action-overlays", "add-normal");
   m_addIcon->setPreferredSize(22, 22);
   m_addIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  m_iconLayout->addItem(m_addIcon);
-  m_iconLayout->setAlignment(m_addIcon, Qt::AlignCenter);
+  m_layout->addItem(m_addIcon, 0, 2, Qt::AlignCenter);
   // begin adding
   connect(m_addIcon, SIGNAL(clicked()), this, SLOT(beginAdd()));
   // create edit icon
@@ -52,8 +44,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_editIcon->setSvg("widgets/configuration-icons", "configure");
   m_editIcon->setPreferredSize(16, 16);
   m_editIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  m_iconLayout->addItem(m_editIcon);
-  m_iconLayout->setAlignment(m_editIcon, Qt::AlignCenter);
+  m_layout->addItem(m_editIcon, 0, 3, Qt::AlignCenter);
   // begin editing
   connect(m_editIcon, SIGNAL(clicked()), this, SLOT(beginEdit()));
   // create remove icon
@@ -62,8 +53,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_removeIcon->setSvg("widgets/configuration-icons", "close");
   m_removeIcon->setPreferredSize(16, 16);
   m_removeIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  m_iconLayout->addItem(m_removeIcon);
-  m_iconLayout->setAlignment(m_removeIcon, Qt::AlignCenter);
+  m_layout->addItem(m_removeIcon, 0, 4, Qt::AlignCenter);
   // ask for confirmation
   connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(beginRemove()));
 }
@@ -109,21 +99,12 @@ void ActivityWidget::lock() {
   m_addIcon->setVisible(false);
   m_editIcon->setVisible(false);
   m_removeIcon->setVisible(false);
-  m_iconLayout->removeItem(m_addIcon);
-  m_iconLayout->removeItem(m_editIcon);
-  m_iconLayout->removeItem(m_removeIcon);
 }
 
 void ActivityWidget::unlock() {
   m_addIcon->setVisible(true);
   m_editIcon->setVisible(true);
   m_removeIcon->setVisible(true);
-  m_iconLayout->addItem(m_addIcon);
-  m_iconLayout->addItem(m_editIcon);
-  m_iconLayout->addItem(m_removeIcon);
-  m_iconLayout->setAlignment(m_addIcon, Qt::AlignCenter);
-  m_iconLayout->setAlignment(m_editIcon, Qt::AlignCenter);
-  m_iconLayout->setAlignment(m_removeIcon, Qt::AlignCenter);
 }
 
 void ActivityWidget::setCurrent() {
@@ -164,12 +145,10 @@ void ActivityWidget::beginRemove() {
   layout->addItem(noButton);
   connect(noButton, SIGNAL(clicked()), this, SLOT(cancelRemove()));
   // show the confirm widget
-  m_layout->addItem(m_removeWidget);
+  m_layout->addItem(m_removeWidget, 1, 0, 1, 5);
 }
 
 void ActivityWidget::acceptRemove() {
-  // hide the confirm widget
-  m_layout->removeItem(m_removeWidget);
   // delete the confirm widget
   m_removeWidget->deleteLater();
   // emit delete signal
@@ -179,8 +158,6 @@ void ActivityWidget::acceptRemove() {
 }
 
 void ActivityWidget::cancelRemove() {
-  // hide the confirm widget
-  m_layout->removeItem(m_removeWidget);
   // delete the confirm widget
   m_removeWidget->deleteLater();
   // turn off the removing flag
@@ -218,7 +195,7 @@ void ActivityWidget::beginEdit() {
   layout->addItem(noButton);
   connect(noButton, SIGNAL(clicked()), this, SLOT(cancelEdit()));
   // show the confirm widget
-  m_layout->addItem(m_editWidget);
+  m_layout->addItem(m_editWidget, 1, 0, 1, 5);
   // put the focus into the line edit
   m_lineEdit->setFocus(Qt::OtherFocusReason);
 }
@@ -226,8 +203,6 @@ void ActivityWidget::beginEdit() {
 void ActivityWidget::acceptEdit() {
   // save the name
   QString name = m_lineEdit->text();
-  // hide the edit widget
-  m_layout->removeItem(m_editWidget);
   // delete the edit widget
   m_editWidget->deleteLater();
   // emit rename signal
@@ -237,8 +212,6 @@ void ActivityWidget::acceptEdit() {
 }
 
 void ActivityWidget::cancelEdit() {
-  // hide the edit widget
-  m_layout->removeItem(m_editWidget);
   // delete the edit widget
   m_editWidget->deleteLater();
   // turn off the editing flag
