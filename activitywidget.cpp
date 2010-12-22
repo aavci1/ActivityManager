@@ -107,9 +107,15 @@ void ActivityWidget::lock() {
   m_addIcon->setVisible(false);
   m_editIcon->setVisible(false);
   m_removeIcon->setVisible(false);
+  m_layout->removeAt(2);
+  m_layout->removeAt(3);
+  m_layout->removeAt(4);
 }
 
 void ActivityWidget::unlock() {
+  m_layout->addItem(m_addIcon, 0, 2, Qt::AlignCenter);
+  m_layout->addItem(m_editIcon, 0, 3, Qt::AlignCenter);
+  m_layout->addItem(m_removeIcon, 0, 4, Qt::AlignCenter);
   m_addIcon->setVisible(true);
   m_editIcon->setVisible(true);
   m_removeIcon->setVisible(true);
