@@ -1,8 +1,11 @@
-* Add ability to lock activity editing. When locked activity
+0.4
+---
+* Added ability to lock activity editing. When locked activity
   clone/edit/remove icons are hidden.
+* Make sure that only one instance of rename or delete dialog
+  is visible at a time. Fixes a crash.
 * Use the proper activities icon.
-* Make sure that only one instance of rename dialog and delete
-  dialog is visible.
+* Added tooltips.
 0.3
 ---
 * Move action icons to the right side to be more
