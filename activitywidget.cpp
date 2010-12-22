@@ -16,7 +16,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_label = new Plasma::IconWidget(this);
   m_label->setOrientation(Qt::Horizontal);
   m_label->setPreferredSize(32, 32);
-  m_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+  m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   m_label->setToolTip(i18n("Click to switch to this activity."));
   m_layout->addItem(m_label, 0, 0, Qt::AlignCenter);
   // setCurrent the activity when clicked on the name
