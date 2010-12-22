@@ -1,3 +1,5 @@
+* Added tooltip to the system tray icon. Tooltip shows the
+  current activity icon and name.
 0.4
 ---
 * Added ability to lock activity editing. When locked activity

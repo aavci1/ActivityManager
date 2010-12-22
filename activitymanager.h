@@ -23,6 +23,7 @@ public:
   void initExtenderItem(Plasma::ExtenderItem *item);
 
 public slots:
+  void toolTipAboutToShow();
   void dataUpdated(QString source, Plasma::DataEngine::Data data);
   void activityAdded(QString id);
   void activityRemoved(QString id);
@@ -44,6 +45,8 @@ private:
 
   QHash<QString, ActivityWidget *> m_activities;
   QAction *toggleLockAction;
+  QString m_currentName;
+  QString m_currentIcon;
 };
 
 #endif

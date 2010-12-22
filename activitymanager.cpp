@@ -6,17 +6,20 @@
 #include <Plasma/ExtenderItem>
 #include <Plasma/Service>
 #include <Plasma/ServiceJob>
+#include <Plasma/ToolTipContent>
+#include <Plasma/ToolTipManager>
 
 #include <QAction>
 #include <QGraphicsLinearLayout>
 #include <QString>
 
-ActivityManager::ActivityManager(QObject *parent, const QVariantList &args): Plasma::PopupApplet(parent, args) {
+ActivityManager::ActivityManager(QObject *parent, const QVariantList &args): Plasma::PopupApplet(parent, args), toggleLockAction(0), m_currentName(""), m_currentIcon("") {
   setPopupIcon("preferences-activities");
   setAspectRatioMode(Plasma::IgnoreAspectRatio);
 }
 
 void ActivityManager::init() {
+  Plasma::ToolTipManager::self()->registerWidget(this);
   extender()->setEmptyExtenderMessage(i18n("No Activities..."));
   // don't grow too much height
   extender()->setMaximumHeight(300);
@@ -59,6 +62,16 @@ void ActivityManager::initExtenderItem(Plasma::ExtenderItem *item) {
   connect(toggleLockAction, SIGNAL(triggered()), this, SLOT(toggleLock()));
 }
 
+void ActivityManager::toolTipAboutToShow() {
+  Plasma::ToolTipContent toolTip;
+
+  toolTip.setMainText(i18n("Current Activity: %1").arg(m_currentName));
+  if (!m_currentIcon.isEmpty())
+    toolTip.setImage(KIcon(m_currentIcon));
+
+  Plasma::ToolTipManager::self()->setContent(this, toolTip);
+}
+
 void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data) {
   if (!m_activities.contains(source))
     return;
@@ -68,6 +81,11 @@ void ActivityManager::dataUpdated(QString source, Plasma::DataEngine::Data data)
   activity->setState(data["State"].toString());
   activity->setIcon(data["Icon"].toString());
   activity->setCurrent(data["Current"].toBool());
+  // update current activity name and icon
+  if (data["Current"].toBool()) {
+    m_currentName = data["Name"].toString();
+    m_currentIcon = data["Icon"].toString();
+  }
   // sort activities
   sortActivities();
 }
