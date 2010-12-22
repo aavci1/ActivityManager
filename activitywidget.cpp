@@ -8,7 +8,7 @@
 #include <QGraphicsGridLayout>
 #include <QGraphicsLinearLayout>
 
-ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWidget(parent), m_layout(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_addIcon(0), m_removeIcon(0), m_id(id), m_dialogShown(false) {
+ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWidget(parent), m_layout(0), m_actionsWidget(0), m_removeWidget(0), m_editWidget(0), m_label(0), m_stateIcon(0), m_addIcon(0), m_removeIcon(0), m_id(id), m_dialogShown(false) {
   m_layout = new QGraphicsGridLayout(this);
   m_layout->setContentsMargins(0, 0, 0, 0);
   setLayout(m_layout);
@@ -31,6 +31,13 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_layout->addItem(m_stateIcon, 0, 1, Qt::AlignCenter);
   // toggle running state when clicked on the icon
   connect(m_stateIcon, SIGNAL(clicked()), this, SLOT(toggleStatus()));
+  // create actions widget
+  m_actionsWidget = new QGraphicsWidget(this);
+  m_layout->addItem(m_actionsWidget, 0, 2, Qt::AlignCenter);
+  // create a layout
+  QGraphicsGridLayout *layout = new QGraphicsGridLayout(m_actionsWidget);
+  layout->setContentsMargins(0, 0, 0, 0);
+  m_actionsWidget->setLayout(layout);
   // create add icon
   m_addIcon = new Plasma::IconWidget(this);
   m_addIcon->setOrientation(Qt::Horizontal);
@@ -38,7 +45,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_addIcon->setPreferredSize(22, 22);
   m_addIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   m_addIcon->setToolTip(i18n("Click to clone this activity."));
-  m_layout->addItem(m_addIcon, 0, 2, Qt::AlignCenter);
+  layout->addItem(m_addIcon, 0, 2, Qt::AlignCenter);
   // begin adding
   connect(m_addIcon, SIGNAL(clicked()), this, SLOT(beginAdd()));
   // create edit icon
@@ -48,7 +55,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_editIcon->setPreferredSize(16, 16);
   m_editIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   m_editIcon->setToolTip(i18n("Click to edit this activity."));
-  m_layout->addItem(m_editIcon, 0, 3, Qt::AlignCenter);
+  layout->addItem(m_editIcon, 0, 3, Qt::AlignCenter);
   // begin editing
   connect(m_editIcon, SIGNAL(clicked()), this, SLOT(beginEdit()));
   // create remove icon
@@ -58,7 +65,7 @@ ActivityWidget::ActivityWidget(QGraphicsItem *parent, QString id) : QGraphicsWid
   m_removeIcon->setPreferredSize(16, 16);
   m_removeIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   m_removeIcon->setToolTip(i18n("Click to remove this activity."));
-  m_layout->addItem(m_removeIcon, 0, 4, Qt::AlignCenter);
+  layout->addItem(m_removeIcon, 0, 4, Qt::AlignCenter);
   // ask for confirmation
   connect(m_removeIcon, SIGNAL(clicked()), this, SLOT(beginRemove()));
 }
@@ -104,21 +111,13 @@ void ActivityWidget::setState(QString state) {
 }
 
 void ActivityWidget::lock() {
-  m_addIcon->setVisible(false);
-  m_editIcon->setVisible(false);
-  m_removeIcon->setVisible(false);
   m_layout->removeAt(2);
-  m_layout->removeAt(3);
-  m_layout->removeAt(4);
+  m_actionsWidget->setVisible(false);
 }
 
 void ActivityWidget::unlock() {
-  m_layout->addItem(m_addIcon, 0, 2, Qt::AlignCenter);
-  m_layout->addItem(m_editIcon, 0, 3, Qt::AlignCenter);
-  m_layout->addItem(m_removeIcon, 0, 4, Qt::AlignCenter);
-  m_addIcon->setVisible(true);
-  m_editIcon->setVisible(true);
-  m_removeIcon->setVisible(true);
+  m_actionsWidget->setVisible(true);
+  m_layout->addItem(m_actionsWidget, 0, 2, Qt::AlignCenter);
 }
 
 void ActivityWidget::setCurrent() {

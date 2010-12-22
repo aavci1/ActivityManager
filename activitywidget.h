@@ -46,6 +46,7 @@ signals:
 
 private:
   QGraphicsGridLayout *m_layout;
+  QGraphicsWidget *m_actionsWidget;
   QGraphicsWidget *m_removeWidget;
   QGraphicsWidget *m_editWidget;
   Plasma::LineEdit *m_lineEdit;

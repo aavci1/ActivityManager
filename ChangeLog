@@ -1,5 +1,6 @@
 * Added tooltip to the system tray icon. Tooltip shows the
   current activity icon and name.
+* Align start/stop icon to the right when activities are locked.
 0.4
 ---
 * Added ability to lock activity editing. When locked activity
